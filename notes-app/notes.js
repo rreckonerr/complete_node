@@ -1,4 +1,5 @@
 const fs = require("fs");
+const chalk = require("chalk");
 
 const getNotes = () => {
   return "Your notes...";
@@ -16,29 +17,22 @@ const addNote = (title = "", body = "") => {
     });
 
     saveNotes(notes);
+    console.log(chalk.green.inverse("New note added!"));
   } else {
-    console.log("exists");
+    console.log(chalk.red.inverse("Note tile taken!"));
   }
 };
 
 const removeNote = title => {
   const notes = loadNotes();
+  const res = notes.filter(note => note.title !== title);
 
-  const note = notes.filter(note => note.title === title);
-
-  if (note.length === 0) {
-    console.log(`Note with title "${title}" doesn't exist`);
-  } else {
-    const res = deleteNote(notes, note[0]);
+  if (res.length < notes.length) {
+    console.log(chalk.green.inverse("Success!"));
     saveNotes(res);
+  } else {
+    console.log(chalk.red.inverse("Ooops... no note found..."));
   }
-};
-
-const deleteNote = (arr, item) => {
-  return arr.reduce((acc, val) => {
-    if (val.title !== item.title) acc.push(val);
-    return acc;
-  }, []);
 };
 
 const saveNotes = arr => {
